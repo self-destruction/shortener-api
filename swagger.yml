@@ -1,0 +1,474 @@
+swagger: '2.0'
+info:
+  description: This is a simple API for Shortener URL
+  version: 1.0.0
+  title: Shortener API
+  contact:
+    email: syrchikov_max@mail.ru
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+consumes:
+  - application/json
+produces:
+  - application/json
+
+tags:
+  - name: User
+    description: Operations with users
+  - name: Statistic
+    description: Operations with user statistic
+  - name: Link
+    description: Operations with links
+securityDefinitions:
+  basicAuth:
+    type: basic
+
+paths:
+  /users:
+    post:
+      tags:
+        - User
+      summary: User registrations
+      operationId: createUser
+      parameters:
+        - in: body
+          name: body
+          description: Created user object
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: simple_username
+              password:
+                type: string
+                example: simple_password
+              email:
+                type: string
+                example: simple@example.com
+            required:
+              - username
+              - password
+              - email
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Bad input parameter
+          schema:
+            type: object
+            properties:
+              error_message:
+                type: string
+                example: Bad input parameter
+            required:
+              - error_message
+        default:
+          description: Operation error
+  /users/login:
+    post:
+      tags:
+        - User
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+        - in: body
+          name: body
+          description: Created user object
+          required: true
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: simple_username
+              password:
+                type: string
+                example: simple_password
+            required:
+              - username
+              - password
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Invalid username/password supplied
+          schema:
+            type: object
+            properties:
+              error_message:
+                type: string
+                example: Invalid username/password supplied
+            required:
+              - error_message
+        default:
+          description: Operation error
+  /users/logout:
+    get:
+      tags:
+        - User
+      security:
+        - basicAuth: []
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      responses:
+        200:
+          description: Successful operation
+        401:
+          $ref: '#/responses/UnauthorizedError'
+        default:
+          description: Operation error
+  /users/me:
+    get:
+      tags:
+        - Statistic
+      security:
+        - basicAuth: []
+      summary: Info about current user
+      operationId: getCurrentUser
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/User'
+        401:
+          $ref: '#/responses/UnauthorizedError'
+        default:
+          description: Operation error
+  /users/me/shorten_urls:
+    post:
+      tags:
+        - Link
+      security:
+        - basicAuth: []
+      summary: Creating a new short link
+      operationId: createShortLink
+      parameters:
+        - in: body
+          name: body
+          description: Created user object
+          required: true
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+                description: Full link to some site
+                example: https://ya.ru
+            required:
+              - url
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Link'
+        400:
+          description: Bad input parameter
+          schema:
+            type: object
+            properties:
+              error_message:
+                type: string
+                example: Bad input parameter
+            required:
+              - error_message
+        401:
+          $ref: '#/responses/UnauthorizedError'
+        default:
+          description: Operation error
+    get:
+      tags:
+        - Link
+      security:
+        - basicAuth: []
+      summary: Get all short links for this user
+      operationId: getLinks
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              links:
+                type: array
+                description: Array of links
+                items:
+                  $ref: '#/definitions/Link'
+            required:
+              - links
+        401:
+          $ref: '#/responses/UnauthorizedError'
+        default:
+          description: Operation error
+  /users/me/shorten_urls/{hash}:
+    get:
+      tags:
+        - Statistic
+      security:
+        - basicAuth: []
+      summary: Get information about a specific short user link
+      operationId: getLinkInfo
+      parameters:
+        - name: hash
+          in: path
+          description: Hash of short url
+          type: string
+          required: true
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              link:
+                $ref: '#/definitions/Link'
+              transitions:
+                type: array
+                description: Array of transitions for last 7 days
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      description: Date of transition
+                      format: date-time
+                      example: '2016-08-29T09:12:39'
+                    count:
+                      type: integer
+                      description: Count of transitions for date
+                      format: Int64
+                      example: 539
+            required:
+              - link
+              - transitions
+        401:
+          $ref: '#/responses/UnauthorizedError'
+        404:
+          description: Bad input url
+          schema:
+            type: object
+            properties:
+              error_message:
+                type: string
+                example: Url not found
+            required:
+              - error_message
+        default:
+          description: Operation error
+    delete:
+      tags:
+        - Link
+      security:
+        - basicAuth: []
+      summary: Remove short link
+      operationId: removeLink
+      parameters:
+        - name: hash
+          in: path
+          description: Hash of short url
+          type: string
+          required: true
+      responses:
+        200:
+          description: Successful operation
+        401:
+          $ref: '#/responses/UnauthorizedError'
+        404:
+          description: Bad input url
+          schema:
+            type: object
+            properties:
+              error_message:
+                type: string
+                example: Url not found
+            required:
+              - error_message
+        default:
+          description: Operation error
+  /users/me/shorten_urls/{hash}/referers:
+    get:
+      tags:
+        - Statistic
+      security:
+        - basicAuth: []
+      summary: Get top from 20 referring sites
+      operationId: getReferers
+      parameters:
+        - name: hash
+          in: path
+          description: Hash of short url
+          type: string
+          required: true
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              top:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    referer:
+                      type: string
+                      example: https://vk.com
+                required:
+                  - id
+                  - referer
+        401:
+          $ref: '#/responses/UnauthorizedError'
+        404:
+          description: Bad input url
+          schema:
+            type: object
+            properties:
+              error_message:
+                type: string
+                example: Url not found
+            required:
+              - error_message
+        default:
+          description: Operation error
+  /shorten_urls/{hash}:
+    get:
+      tags:
+        - Link
+      security:
+        - basicAuth: []
+      summary: Get link for redirect
+      operationId: getLink
+      parameters:
+        - name: hash
+          in: path
+          description: Hash of short url
+          type: string
+          required: true
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              link:
+                $ref: '#/definitions/Link'
+            required:
+              - link
+        401:
+          $ref: '#/responses/UnauthorizedError'
+        404:
+          description: Bad input url
+          schema:
+            type: object
+            properties:
+              error_message:
+                type: string
+                example: Url not found
+            required:
+              - error_message
+        default:
+          description: Operation error
+
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      username:
+        type: string
+        example: simple_username
+      email:
+        type: string
+        example: simple@example.com
+      dateCreated:
+        type: string
+        format: date-time
+        example: '2016-08-29T09:12:33'
+      lastLoginDate:
+        type: string
+        format: date-time
+        example: '2016-08-29T09:12:33'
+      timezone:
+        type: string
+        example: Europe/Moscow
+      language:
+        type: string
+        example: ru_RU
+    required:
+      - id
+      - username
+      - password
+      - email
+  Link:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 2
+      hash:
+        type: string
+        description: Short url
+        example: gD4AyQ
+      fullTitle:
+        type: string
+        description: Full link
+        example: https://ya.ru
+      user:
+        $ref: '#/definitions/User'
+      views:
+        type: integer
+        format: int64
+        description: Views this link
+        example: 532
+      dateCreated:
+        type: string
+        format: date-time
+        example: '2016-08-29T09:12:33'
+    required:
+      - id
+      - hash
+      - fullTitle
+      - user
+  Transition:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 3
+      link:
+        $ref: '#/definitions/Link'
+      referer:
+        type: string
+        description: Where the transition came from
+        example: https://vk.com
+      dateCreated:
+        type: string
+        format: date-time
+        example: '2016-08-29T09:12:33'
+    required:
+      - id
+      - link
+responses:
+  UnauthorizedError:
+    description: Authentication information is missing or invalid
+    headers:
+      WWW_Authenticate:
+        type: string
+host: localhost:8080
+basePath: /api/v1
+schemes:
+  - http
