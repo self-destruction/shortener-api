@@ -246,6 +246,7 @@ syrchikov_max@mail.ru
 | ---- | ---- | ----------- | -------- |
 | id | long |  | Yes |
 | username | string |  | Yes |
+| password | string |  | Yes |
 | email | string |  | Yes |
 | dateCreated | dateTime |  | No |
 | lastLoginDate | dateTime |  | No |
@@ -271,3 +272,15 @@ syrchikov_max@mail.ru
 | link | [Link](#link) |  | Yes |
 | referer | string | Where the transition came from | No |
 | dateCreated | dateTime |  | No |
+
+___  
+PS
+[My private SwaggerHub](https://app.swaggerhub.com/apis/Intercross/shortener/1.0.0)
+
+|  |
+| ---- |
+| **swagger-markdown -i swagger.yml** - сгенерировать md-файл |
+
+|  |
+| ---- |
+| **swagger generate server -A shortener -f ./swagger.yml** - сгенерировать код |

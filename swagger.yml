@@ -389,6 +389,9 @@ definitions:
       username:
         type: string
         example: simple_username
+      password:
+        type: string
+        example: y9df4FG3FS4yu4f5hjd
       email:
         type: string
         example: simple@example.com
