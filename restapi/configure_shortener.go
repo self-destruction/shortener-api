@@ -4,11 +4,13 @@ package restapi
 
 import (
 	"crypto/tls"
+	"github.com/go-openapi/swag"
 	"net/http"
+	"shortener-api/models"
 
-	errors "github.com/go-openapi/errors"
-	runtime "github.com/go-openapi/runtime"
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/runtime/middleware"
 
 	"shortener-api/restapi/operations"
 	"shortener-api/restapi/operations/link"
@@ -50,7 +52,14 @@ func configureAPI(api *operations.ShortenerAPI) http.Handler {
 		return middleware.NotImplemented("operation link.CreateShortLink has not yet been implemented")
 	})
 	api.UserCreateUserHandler = user.CreateUserHandlerFunc(func(params user.CreateUserParams) middleware.Responder {
-		return middleware.NotImplemented("operation user.CreateUser has not yet been implemented")
+		userRequest := params.Body
+		userModel := &models.User{
+			ID:       swag.Int64(1),
+			Username: userRequest.Username,
+			Password: userRequest.Password,
+			Email:    userRequest.Email,
+		}
+		return user.NewCreateUserOK().WithPayload(userModel)
 	})
 	api.StatisticGetCurrentUserHandler = statistic.GetCurrentUserHandlerFunc(func(params statistic.GetCurrentUserParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation statistic.GetCurrentUser has not yet been implemented")
