@@ -281,4 +281,4 @@ PS
 
 |  |
 | ---- |
-| **swagger generate server -A shortener -f ./swagger.yml** - сгенерировать код |
+| **swagger generate server -A shortener -f ./swagger/swagger.yml** - сгенерировать код |
