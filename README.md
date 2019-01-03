@@ -11,7 +11,7 @@ syrchikov_max@mail.ru
 
 ### Security
 ---
-**basicAuth**  
+**BasicAuth**  
 
 |basic|*Basic*|
 |---|---|
@@ -25,15 +25,14 @@ syrchikov_max@mail.ru
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| body | body | Created user object | Yes | object |
+| body | body | User registration | Yes | object |
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation | [User](#user) |
-| 400 | Bad input parameter | object |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 200 |  |
+| 400 |  |
 
 ### /users/login
 ---
@@ -44,15 +43,14 @@ syrchikov_max@mail.ru
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| body | body | Created user object | Yes | object |
+| body | body | User login | Yes | object |
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation | [User](#user) |
-| 400 | Invalid username/password supplied | object |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 200 |  |
+| 400 |  |
 
 ### /users/logout
 ---
@@ -63,15 +61,14 @@ syrchikov_max@mail.ru
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Successful operation |
+| 204 |  |
 | 401 |  |
-| default | Operation error |
 
 **Security**
 
 | Security Schema | Scopes |
 | --- | --- |
-| basicAuth | |
+| BasicAuth | |
 
 ### /users/me
 ---
@@ -80,17 +77,16 @@ syrchikov_max@mail.ru
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation | [User](#user) |
-| 401 |  |  |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 200 |  |
+| 401 |  |
 
 **Security**
 
 | Security Schema | Scopes |
 | --- | --- |
-| basicAuth | |
+| BasicAuth | |
 
 ### /users/me/shorten_urls
 ---
@@ -101,39 +97,37 @@ syrchikov_max@mail.ru
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| body | body | Created user object | Yes | object |
+| body | body | Full link | Yes | object |
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation | [Link](#link) |
-| 400 | Bad input parameter | object |
-| 401 |  |  |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 200 |  |
+| 400 |  |
+| 401 |  |
 
 **Security**
 
 | Security Schema | Scopes |
 | --- | --- |
-| basicAuth | |
+| BasicAuth | |
 
 ##### ***GET***
 **Summary:** Get all short links for this user
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation | object |
-| 401 |  |  |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 200 |  |
+| 401 |  |
 
 **Security**
 
 | Security Schema | Scopes |
 | --- | --- |
-| basicAuth | |
+| BasicAuth | |
 
 ### /users/me/shorten_urls/{hash}
 ---
@@ -148,18 +142,17 @@ syrchikov_max@mail.ru
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation | object |
-| 401 |  |  |
-| 404 | Bad input url | object |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 200 |  |
+| 400 |  |
+| 404 |  |
 
 **Security**
 
 | Security Schema | Scopes |
 | --- | --- |
-| basicAuth | |
+| BasicAuth | |
 
 ##### ***DELETE***
 **Summary:** Remove short link
@@ -172,18 +165,17 @@ syrchikov_max@mail.ru
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation |  |
-| 401 |  |  |
-| 404 | Bad input url | object |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 204 |  |
+| 401 |  |
+| 404 |  |
 
 **Security**
 
 | Security Schema | Scopes |
 | --- | --- |
-| basicAuth | |
+| BasicAuth | |
 
 ### /users/me/shorten_urls/{hash}/referers
 ---
@@ -198,18 +190,17 @@ syrchikov_max@mail.ru
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation | object |
-| 401 |  |  |
-| 404 | Bad input url | object |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 200 |  |
+| 401 |  |
+| 404 |  |
 
 **Security**
 
 | Security Schema | Scopes |
 | --- | --- |
-| basicAuth | |
+| BasicAuth | |
 
 ### /shorten_urls/{hash}
 ---
@@ -224,18 +215,18 @@ syrchikov_max@mail.ru
 
 **Responses**
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Successful operation | object |
-| 401 |  |  |
-| 404 | Bad input url | object |
-| default | Operation error |  |
+| Code | Description |
+| ---- | ----------- |
+| 200 |  |
+| 401 |  |
+| 404 |  |
+| default | Operation error |
 
 **Security**
 
 | Security Schema | Scopes |
 | --- | --- |
-| basicAuth | |
+| BasicAuth | |
 
 ### Models
 ---
@@ -246,7 +237,7 @@ syrchikov_max@mail.ru
 | ---- | ---- | ----------- | -------- |
 | id | long |  | Yes |
 | username | string |  | Yes |
-| password | string |  | Yes |
+| password | password |  | Yes |
 | email | string |  | Yes |
 | dateCreated | dateTime |  | No |
 | lastLoginDate | dateTime |  | No |
@@ -272,6 +263,13 @@ syrchikov_max@mail.ru
 | link | [Link](#link) |  | Yes |
 | referer | string | Where the transition came from | No |
 | dateCreated | dateTime |  | No |
+
+### Error  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| code | string |  | Yes |
+| message | string |  | No |
 
 ___  
 PS

@@ -21,7 +21,7 @@ tags:
   - name: Link
     description: Operations with links
 securityDefinitions:
-  basicAuth:
+  BasicAuth:
     type: basic
 
 paths:
@@ -34,7 +34,7 @@ paths:
       parameters:
         - in: body
           name: body
-          description: Created user object
+          description: User registration
           required: true
           schema:
             type: object
@@ -44,31 +44,26 @@ paths:
                 example: simple_username
               password:
                 type: string
+                format: password
                 example: simple_password
               email:
                 type: string
                 example: simple@example.com
+              timezone:
+                type: string
+                example: Europe/Moscow
+              language:
+                type: string
+                example: ru_RU
             required:
               - username
               - password
               - email
       responses:
         200:
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/User'
+          $ref: '#/responses/User'
         400:
-          description: Bad input parameter
-          schema:
-            type: object
-            properties:
-              error_message:
-                type: string
-                example: Bad input parameter
-            required:
-              - error_message
-        default:
-          description: Operation error
+          $ref: '#/responses/BadRequest'
   /users/login:
     post:
       tags:
@@ -78,7 +73,7 @@ paths:
       parameters:
         - in: body
           name: body
-          description: Created user object
+          description: User login
           required: true
           schema:
             type: object
@@ -88,71 +83,54 @@ paths:
                 example: simple_username
               password:
                 type: string
+                format: password
                 example: simple_password
             required:
               - username
               - password
       responses:
         200:
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/User'
+          $ref: '#/responses/User'
         400:
-          description: Invalid username/password supplied
-          schema:
-            type: object
-            properties:
-              error_message:
-                type: string
-                example: Invalid username/password supplied
-            required:
-              - error_message
-        default:
-          description: Operation error
+          $ref: '#/responses/BadRequest'
   /users/logout:
     get:
       tags:
         - User
       security:
-        - basicAuth: []
+        - BasicAuth: []
       summary: Logs out current logged in user session
       operationId: logoutUser
       responses:
-        200:
-          description: Successful operation
+        204:
+          $ref: '#/responses/NoContent'
         401:
-          $ref: '#/responses/UnauthorizedError'
-        default:
-          description: Operation error
+          $ref: '#/responses/Unauthorized'
   /users/me:
     get:
       tags:
         - Statistic
       security:
-        - basicAuth: []
+        - BasicAuth: []
       summary: Info about current user
       operationId: getCurrentUser
       responses:
         200:
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/User'
+          $ref: '#/responses/User'
         401:
-          $ref: '#/responses/UnauthorizedError'
-        default:
-          description: Operation error
+          $ref: '#/responses/Unauthorized'
   /users/me/shorten_urls:
     post:
       tags:
         - Link
       security:
-        - basicAuth: []
+        - BasicAuth: []
       summary: Creating a new short link
       operationId: createShortLink
       parameters:
         - in: body
           name: body
-          description: Created user object
+          description: Full link
           required: true
           schema:
             type: object
@@ -160,221 +138,111 @@ paths:
               url:
                 type: string
                 description: Full link to some site
-                example: https://ya.ru
+                example: 'https://ya.ru'
             required:
               - url
       responses:
         200:
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/Link'
+          $ref: '#/responses/Link'
         400:
-          description: Bad input parameter
-          schema:
-            type: object
-            properties:
-              error_message:
-                type: string
-                example: Bad input parameter
-            required:
-              - error_message
+          $ref: '#/responses/BadRequest'
         401:
-          $ref: '#/responses/UnauthorizedError'
-        default:
-          description: Operation error
+          $ref: '#/responses/Unauthorized'
     get:
       tags:
         - Link
       security:
-        - basicAuth: []
+        - BasicAuth: []
       summary: Get all short links for this user
       operationId: getLinks
       responses:
         200:
-          description: Successful operation
-          schema:
-            type: object
-            properties:
-              links:
-                type: array
-                description: Array of links
-                items:
-                  $ref: '#/definitions/Link'
-            required:
-              - links
+          $ref: '#/responses/Links'
         401:
-          $ref: '#/responses/UnauthorizedError'
-        default:
-          description: Operation error
+          $ref: '#/responses/Unauthorized'
   /users/me/shorten_urls/{hash}:
     get:
       tags:
         - Statistic
       security:
-        - basicAuth: []
+        - BasicAuth: []
       summary: Get information about a specific short user link
       operationId: getLinkInfo
       parameters:
-        - name: hash
-          in: path
+        - in: path
+          name: hash
           description: Hash of short url
-          type: string
           required: true
+          type: string
       responses:
         200:
-          description: Successful operation
-          schema:
-            type: object
-            properties:
-              link:
-                $ref: '#/definitions/Link'
-              transitions:
-                type: array
-                description: Array of transitions for last 7 days
-                items:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                      description: Date of transition
-                      format: date-time
-                      example: '2016-08-29T09:12:39'
-                    count:
-                      type: integer
-                      description: Count of transitions for date
-                      format: Int64
-                      example: 539
-            required:
-              - link
-              - transitions
-        401:
-          $ref: '#/responses/UnauthorizedError'
+          $ref: '#/responses/Transitions'
+        400:
+          $ref: '#/responses/BadRequest'
         404:
-          description: Bad input url
-          schema:
-            type: object
-            properties:
-              error_message:
-                type: string
-                example: Url not found
-            required:
-              - error_message
-        default:
-          description: Operation error
+          $ref: '#/responses/NotFound'
     delete:
       tags:
         - Link
       security:
-        - basicAuth: []
+        - BasicAuth: []
       summary: Remove short link
       operationId: removeLink
       parameters:
-        - name: hash
-          in: path
+        - in: path
+          name: hash
           description: Hash of short url
-          type: string
           required: true
+          type: string
       responses:
-        200:
-          description: Successful operation
+        204:
+          $ref: '#/responses/NoContent'
         401:
-          $ref: '#/responses/UnauthorizedError'
+          $ref: '#/responses/Unauthorized'
         404:
-          description: Bad input url
-          schema:
-            type: object
-            properties:
-              error_message:
-                type: string
-                example: Url not found
-            required:
-              - error_message
-        default:
-          description: Operation error
+          $ref: '#/responses/NotFound'
   /users/me/shorten_urls/{hash}/referers:
     get:
       tags:
         - Statistic
       security:
-        - basicAuth: []
+        - BasicAuth: []
       summary: Get top from 20 referring sites
       operationId: getReferers
       parameters:
-        - name: hash
-          in: path
+        - in: path
+          name: hash
           description: Hash of short url
-          type: string
           required: true
+          type: string
       responses:
         200:
-          description: Successful operation
-          schema:
-            type: object
-            properties:
-              top:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      example: 1
-                    referer:
-                      type: string
-                      example: https://vk.com
-                required:
-                  - id
-                  - referer
+          $ref: '#/responses/TopReferers'
         401:
-          $ref: '#/responses/UnauthorizedError'
+          $ref: '#/responses/Unauthorized'
         404:
-          description: Bad input url
-          schema:
-            type: object
-            properties:
-              error_message:
-                type: string
-                example: Url not found
-            required:
-              - error_message
-        default:
-          description: Operation error
+          $ref: '#/responses/NotFound'
   /shorten_urls/{hash}:
     get:
       tags:
         - Link
       security:
-        - basicAuth: []
+        - BasicAuth: []
       summary: Get link for redirect
       operationId: getLink
       parameters:
-        - name: hash
-          in: path
+        - in: path
+          name: hash
           description: Hash of short url
-          type: string
           required: true
+          type: string
       responses:
         200:
-          description: Successful operation
-          schema:
-            type: object
-            properties:
-              link:
-                $ref: '#/definitions/Link'
-            required:
-              - link
+          $ref: '#/responses/Link'
         401:
-          $ref: '#/responses/UnauthorizedError'
+          $ref: '#/responses/Unauthorized'
         404:
-          description: Bad input url
-          schema:
-            type: object
-            properties:
-              error_message:
-                type: string
-                example: Url not found
-            required:
-              - error_message
+          $ref: '#/responses/NotFound'
         default:
           description: Operation error
 
@@ -385,12 +253,14 @@ definitions:
       id:
         type: integer
         format: int64
+        minimum: 1
         example: 1
       username:
         type: string
         example: simple_username
       password:
         type: string
+        format: password
         example: y9df4FG3FS4yu4f5hjd
       email:
         type: string
@@ -420,6 +290,7 @@ definitions:
       id:
         type: integer
         format: int64
+        minimum: 1
         example: 2
       hash:
         type: string
@@ -428,12 +299,14 @@ definitions:
       fullTitle:
         type: string
         description: Full link
-        example: https://ya.ru
+        example: 'https://ya.ru'
       user:
         $ref: '#/definitions/User'
       views:
         type: integer
         format: int64
+        minimum: 0
+        default: 0
         description: Views this link
         example: 532
       dateCreated:
@@ -451,13 +324,14 @@ definitions:
       id:
         type: integer
         format: int64
+        minimum: 1
         example: 3
       link:
         $ref: '#/definitions/Link'
       referer:
         type: string
         description: Where the transition came from
-        example: https://vk.com
+        example: 'https://vk.com'
       dateCreated:
         type: string
         format: date-time
@@ -465,13 +339,112 @@ definitions:
     required:
       - id
       - link
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    required:
+      - code
 responses:
-  UnauthorizedError:
+  NoContent:
+    description: NoContent
+  BadRequest:
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/Error'
+  Unauthorized:
     description: Authentication information is missing or invalid
     headers:
       WWW_Authenticate:
         type: string
+    schema:
+      $ref: '#/definitions/Error'
+  NotFound:
+    description: The specified resource was not found
+    schema:
+      $ref: '#/definitions/Error'
+  User:
+    description: Get user
+    schema:
+      $ref: '#/definitions/User'
+  Link:
+    description: Get link
+    schema:
+      $ref: '#/definitions/Link'
+  Links:
+    description: Get array of links
+    schema:
+      type: object
+      properties:
+        links:
+          type: array
+          description: Array of links
+          items:
+            $ref: '#/definitions/Link'
+      required:
+        - links
+  Transitions:
+    description: Transitions for link
+    schema:
+      type: object
+      properties:
+        link:
+          $ref: '#/definitions/Link'
+        transitions:
+          type: array
+          description: Array of transitions
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                description: Date of transition
+                format: date-time
+                example: '2016-08-29T09:12:39'
+              count:
+                type: integer
+                format: Int64
+                minimum: 0
+                description: Count of transitions for date
+                example: 539
+            required:
+              - date
+              - count
+      required:
+        - link
+        - transitions
+  TopReferers:
+    description: Successful operation
+    schema:
+      type: object
+      properties:
+        top:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                minimum: 1
+                example: 1
+              referer:
+                type: string
+                example: 'https://vk.com'
+              count:
+                type: integer
+                minimum: 1
+                example: 539
+            required:
+              - id
+              - referer
+              - count
+      required:
+        - top
+# Added by API Auto Mocking Plugin
 host: localhost:8080
 basePath: /api/v1
 schemes:
-  - http
+ - http
