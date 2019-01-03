@@ -39,8 +39,7 @@ type User struct {
 
 	// password
 	// Required: true
-	// Format: password
-	Password *strfmt.Password `json:"password"`
+	Password *string `json:"password"`
 
 	// timezone
 	Timezone string `json:"timezone,omitempty"`
@@ -135,10 +134,6 @@ func (m *User) validateLastLoginDate(formats strfmt.Registry) error {
 func (m *User) validatePassword(formats strfmt.Registry) error {
 
 	if err := validate.Required("password", "body", m.Password); err != nil {
-		return err
-	}
-
-	if err := validate.FormatOf("password", "body", "password", m.Password.String(), formats); err != nil {
 		return err
 	}
 

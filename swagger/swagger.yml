@@ -44,7 +44,6 @@ paths:
                 example: simple_username
               password:
                 type: string
-                format: password
                 example: simple_password
               email:
                 type: string
@@ -83,7 +82,6 @@ paths:
                 example: simple_username
               password:
                 type: string
-                format: password
                 example: simple_password
             required:
               - username
@@ -260,7 +258,6 @@ definitions:
         example: simple_username
       password:
         type: string
-        format: password
         example: y9df4FG3FS4yu4f5hjd
       email:
         type: string

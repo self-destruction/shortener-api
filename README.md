@@ -237,7 +237,7 @@ syrchikov_max@mail.ru
 | ---- | ---- | ----------- | -------- |
 | id | long |  | Yes |
 | username | string |  | Yes |
-| password | password |  | Yes |
+| password | string |  | Yes |
 | email | string |  | Yes |
 | dateCreated | dateTime |  | No |
 | lastLoginDate | dateTime |  | No |
@@ -277,7 +277,7 @@ PS
 
 |  |
 | ---- |
-| **swagger-markdown -i swagger.yml** - сгенерировать md-файл |
+| **swagger-markdown -i ./swagger/swagger.yml** - сгенерировать md-файл |
 
 |  |
 | ---- |

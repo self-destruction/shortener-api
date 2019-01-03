@@ -67,8 +67,7 @@ type LoginUserBody struct {
 
 	// password
 	// Required: true
-	// Format: password
-	Password *strfmt.Password `json:"password"`
+	Password *string `json:"password"`
 
 	// username
 	// Required: true
@@ -96,10 +95,6 @@ func (o *LoginUserBody) Validate(formats strfmt.Registry) error {
 func (o *LoginUserBody) validatePassword(formats strfmt.Registry) error {
 
 	if err := validate.Required("body"+"."+"password", "body", o.Password); err != nil {
-		return err
-	}
-
-	if err := validate.FormatOf("body"+"."+"password", "body", "password", o.Password.String(), formats); err != nil {
 		return err
 	}
 

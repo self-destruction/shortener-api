@@ -111,7 +111,6 @@ func init() {
                 },
                 "password": {
                   "type": "string",
-                  "format": "password",
                   "example": "simple_password"
                 },
                 "timezone": {
@@ -158,7 +157,6 @@ func init() {
               "properties": {
                 "password": {
                   "type": "string",
-                  "format": "password",
                   "example": "simple_password"
                 },
                 "username": {
@@ -510,7 +508,6 @@ func init() {
         },
         "password": {
           "type": "string",
-          "format": "password",
           "example": "y9df4FG3FS4yu4f5hjd"
         },
         "timezone": {
@@ -788,7 +785,6 @@ func init() {
                 },
                 "password": {
                   "type": "string",
-                  "format": "password",
                   "example": "simple_password"
                 },
                 "timezone": {
@@ -841,7 +837,6 @@ func init() {
               "properties": {
                 "password": {
                   "type": "string",
-                  "format": "password",
                   "example": "simple_password"
                 },
                 "username": {
@@ -1357,7 +1352,6 @@ func init() {
         },
         "password": {
           "type": "string",
-          "format": "password",
           "example": "y9df4FG3FS4yu4f5hjd"
         },
         "timezone": {
