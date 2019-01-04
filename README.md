@@ -229,10 +229,9 @@ syrchikov_max@mail.ru
 | ---- | ---- | ----------- | -------- |
 | id | long |  | Yes |
 | username | string |  | Yes |
-| password | string |  | Yes |
+| hash | string |  | Yes |
 | email | string |  | Yes |
-| dateCreated | dateTime |  | No |
-| lastLoginDate | dateTime |  | No |
+| dateCreated | string |  | Yes |
 | timezone | string |  | No |
 | language | string |  | No |
 
@@ -260,7 +259,7 @@ syrchikov_max@mail.ru
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| code | string |  | Yes |
+| code | integer |  | Yes |
 | message | string |  | No |
 
 ___  
