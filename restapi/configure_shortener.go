@@ -4,18 +4,19 @@ package restapi
 
 import (
 	"crypto/tls"
+	"fmt"
 	"github.com/dre1080/recover"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/swag"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ivahaev/go-logger"
 	"github.com/jmoiron/sqlx"
 	"github.com/jmoiron/sqlx/reflectx"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
-	"shortener-api/models"
+	"shortener-api/api/handlers"
 	"shortener-api/restapi/operations"
 	"shortener-api/restapi/operations/link"
 	"shortener-api/restapi/operations/statistic"
@@ -29,16 +30,7 @@ func configureFlags(api *operations.ShortenerAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
-var connect *sqlx.DB
-
-func hitError(err error, errorCode int) middleware.Responder {
-	return user.NewCreateUserBadRequest().WithPayload(
-		&models.Error{
-			Code:    swag.Int64(int64(errorCode)),
-			Message: err.Error(),
-		},
-	)
-}
+var h handlers.Handler
 
 func configureAPI(api *operations.ShortenerAPI) http.Handler {
 	// configure the api here
@@ -67,40 +59,7 @@ func configureAPI(api *operations.ShortenerAPI) http.Handler {
 	api.LinkCreateShortLinkHandler = link.CreateShortLinkHandlerFunc(func(params link.CreateShortLinkParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation link.CreateShortLink has not yet been implemented")
 	})
-	api.UserCreateUserHandler = user.CreateUserHandlerFunc(func(params user.CreateUserParams) middleware.Responder {
-		userRequest := params.Body
-
-		stmt, err := connect.Prepare("INSERT `shortener`.`user` SET username=?, hash=?, email=?, timezone=?, language=?")
-		if err != nil {
-			logger.Debug(err)
-			return hitError(err, user.CreateUserBadRequestCode)
-		}
-
-		// insert user into db
-		res, err := stmt.Exec(userRequest.Username, userRequest.Password, userRequest.Email, userRequest.Timezone, userRequest.Language)
-		if err != nil {
-			logger.Debug(err)
-			return hitError(err, user.CreateUserBadRequestCode)
-		}
-
-		insertId, err := res.LastInsertId()
-		if err != nil {
-			logger.Debug(err)
-			return hitError(err, user.CreateUserBadRequestCode)
-		}
-
-		// select user by last insert id for response
-		userDB := &models.User{}
-		query := "SELECT id, username, hash, email, timezone, language, createdAt AS dateCreated FROM `shortener`.`user` WHERE id=? LIMIT 1"
-		err = connect.Get(userDB, query, insertId)
-		if err != nil {
-			logger.Debug(err)
-			return hitError(err, user.CreateUserBadRequestCode)
-		}
-
-		logger.JSON(userDB)
-		return user.NewCreateUserOK().WithPayload(userDB)
-	})
+	api.UserCreateUserHandler = user.CreateUserHandlerFunc(h.CreateUser)
 	api.StatisticGetCurrentUserHandler = statistic.GetCurrentUserHandlerFunc(func(params statistic.GetCurrentUserParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation statistic.GetCurrentUser has not yet been implemented")
 	})
@@ -152,31 +111,39 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	db, err := sqlx.Open("mysql", "root:pwd@tcp(192.168.99.100:3307)/shortener?charset=utf8")
+	// reading config from file
+	viper.SetConfigName("database")
+	viper.AddConfigPath("./config")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config file, %s", err)
+	}
+
+	// initial config string
+	connectionString := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8",
+		viper.GetString("username"),
+		viper.GetString("password"),
+		viper.GetString("host"),
+		viper.GetString("port"),
+		viper.GetString("database"),
+	)
+	db, err := sqlx.Connect(viper.GetString("adapter"), connectionString)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 	//defer db.Close()
 
-	// Ping to connection
-	err = db.Ping()
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
 	// https://github.com/jmoiron/sqlx/issues/322
 	db.Mapper = reflectx.NewMapperFunc("json", strings.ToLower)
 
-	connect = db
+	h = handlers.Handler{Connect: db}
 
 	err = logger.SetLevel("DEBUG")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-
 	recovery := recover.New(&recover.Options{
-		Log: logger.Info,
+		Log: logger.Crit,
 	})
-
 	return recovery(handler)
 }
