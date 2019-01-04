@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/swag"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ivahaev/go-logger"
 	"shortener-api/models"
@@ -14,20 +15,20 @@ func (h *Handler) CreateUser(params user.CreateUserParams) middleware.Responder 
 	stmt, err := h.Connect.Prepare("INSERT `shortener`.`user` SET username=?, hash=?, email=?, timezone=?, language=?")
 	if err != nil {
 		logger.Debug(err)
-		return h.hitError(err, user.CreateUserBadRequestCode)
+		return h.hitCreateUserError(err, user.CreateUserBadRequestCode)
 	}
 
 	// insert user into db
 	res, err := stmt.Exec(userRequest.Username, userRequest.Password, userRequest.Email, userRequest.Timezone, userRequest.Language)
 	if err != nil {
 		logger.Debug(err)
-		return h.hitError(err, user.CreateUserBadRequestCode)
+		return h.hitCreateUserError(err, user.CreateUserBadRequestCode)
 	}
 
 	insertId, err := res.LastInsertId()
 	if err != nil {
 		logger.Debug(err)
-		return h.hitError(err, user.CreateUserBadRequestCode)
+		return h.hitCreateUserError(err, user.CreateUserBadRequestCode)
 	}
 
 	// select user by last insert id for response
@@ -36,9 +37,18 @@ func (h *Handler) CreateUser(params user.CreateUserParams) middleware.Responder 
 	err = h.Connect.Get(userDB, query, insertId)
 	if err != nil {
 		logger.Debug(err)
-		return h.hitError(err, user.CreateUserBadRequestCode)
+		return h.hitCreateUserError(err, user.CreateUserBadRequestCode)
 	}
 
 	logger.JSON(userDB)
 	return user.NewCreateUserOK().WithPayload(userDB)
+}
+
+func (h *Handler) hitCreateUserError(err error, errorCode int) middleware.Responder {
+	return user.NewCreateUserBadRequest().WithPayload(
+		&models.Error{
+			Code:    swag.Int64(int64(errorCode)),
+			Message: err.Error(),
+		},
+	)
 }

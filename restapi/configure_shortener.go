@@ -47,9 +47,7 @@ func configureAPI(api *operations.ShortenerAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	// Applies when the Authorization header is set with the Basic scheme
-	api.BasicAuthAuth = func(user string, pass string) (interface{}, error) {
-		return nil, errors.NotImplemented("basic auth  (BasicAuth) has not yet been implemented")
-	}
+	api.BasicAuthAuth = h.Authorize
 
 	// Set your custom authorizer if needed. Default one is security.Authorized()
 	// Expected interface runtime.Authorizer
@@ -60,9 +58,7 @@ func configureAPI(api *operations.ShortenerAPI) http.Handler {
 		return middleware.NotImplemented("operation link.CreateShortLink has not yet been implemented")
 	})
 	api.UserCreateUserHandler = user.CreateUserHandlerFunc(h.CreateUser)
-	api.StatisticGetCurrentUserHandler = statistic.GetCurrentUserHandlerFunc(func(params statistic.GetCurrentUserParams, principal interface{}) middleware.Responder {
-		return middleware.NotImplemented("operation statistic.GetCurrentUser has not yet been implemented")
-	})
+	api.StatisticGetCurrentUserHandler = statistic.GetCurrentUserHandlerFunc(h.GetCurrentUser)
 	api.LinkGetLinkHandler = link.GetLinkHandlerFunc(func(params link.GetLinkParams) middleware.Responder {
 		return middleware.NotImplemented("operation link.GetLink has not yet been implemented")
 	})

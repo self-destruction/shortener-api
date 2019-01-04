@@ -1,22 +1,25 @@
 package handlers
 
 import (
-	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-openapi/swag"
+	"fmt"
+	"github.com/go-openapi/errors"
+	"github.com/ivahaev/go-logger"
 	"github.com/jmoiron/sqlx"
 	"shortener-api/models"
-	"shortener-api/restapi/operations/user"
 )
 
 type Handler struct {
 	Connect *sqlx.DB
 }
 
-func (h *Handler) hitError(err error, errorCode int) middleware.Responder {
-	return user.NewCreateUserBadRequest().WithPayload(
-		&models.Error{
-			Code:    swag.Int64(int64(errorCode)),
-			Message: err.Error(),
-		},
-	)
+func (h *Handler) Authorize(user string, pass string) (interface{}, error) {
+	userDB := &models.User{}
+	query := "SELECT id, username, hash, email, timezone, language, createdAt AS dateCreated FROM `shortener`.`user`WHERE username = ? AND hash = ? LIMIT 1"
+	err := h.Connect.Get(userDB, query, user, pass)
+	if err != nil {
+		logger.Notice(err)
+		return nil, errors.Unauthenticated(fmt.Sprintf("username - %s", user))
+	}
+
+	return userDB, nil
 }
