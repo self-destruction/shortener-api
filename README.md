@@ -263,7 +263,10 @@ syrchikov_max@mail.ru
 | message | string |  | No |
 
 ___  
-PS
+
+**restapi/configure_shortener.go** - файл с конфигурациями  
+**api/handlers** - хэндлеры   
+___
 [My private SwaggerHub](https://app.swaggerhub.com/apis/Intercross/shortener/1.0.0)
 
 |  |
