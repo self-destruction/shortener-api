@@ -67,20 +67,25 @@ type CreateUserBody struct {
 
 	// email
 	// Required: true
+	// Max Length: 100
 	Email *string `json:"email"`
 
 	// language
+	// Max Length: 5
 	Language string `json:"language,omitempty"`
 
 	// password
 	// Required: true
+	// Max Length: 60
 	Password *string `json:"password"`
 
 	// timezone
+	// Max Length: 40
 	Timezone string `json:"timezone,omitempty"`
 
 	// username
 	// Required: true
+	// Max Length: 60
 	Username *string `json:"username"`
 }
 
@@ -92,7 +97,15 @@ func (o *CreateUserBody) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := o.validateLanguage(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := o.validatePassword(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTimezone(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -112,6 +125,23 @@ func (o *CreateUserBody) validateEmail(formats strfmt.Registry) error {
 		return err
 	}
 
+	if err := validate.MaxLength("body"+"."+"email", "body", string(*o.Email), 100); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) validateLanguage(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Language) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("body"+"."+"language", "body", string(o.Language), 5); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -121,12 +151,33 @@ func (o *CreateUserBody) validatePassword(formats strfmt.Registry) error {
 		return err
 	}
 
+	if err := validate.MaxLength("body"+"."+"password", "body", string(*o.Password), 60); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *CreateUserBody) validateTimezone(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Timezone) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("body"+"."+"timezone", "body", string(o.Timezone), 40); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (o *CreateUserBody) validateUsername(formats strfmt.Registry) error {
 
 	if err := validate.Required("body"+"."+"username", "body", o.Username); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("body"+"."+"username", "body", string(*o.Username), 60); err != nil {
 		return err
 	}
 

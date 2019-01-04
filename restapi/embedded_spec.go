@@ -92,22 +92,27 @@ func init() {
               "properties": {
                 "email": {
                   "type": "string",
+                  "maxLength": 100,
                   "example": "simple@example.com"
                 },
                 "language": {
                   "type": "string",
+                  "maxLength": 5,
                   "example": "ru_RU"
                 },
                 "password": {
                   "type": "string",
+                  "maxLength": 60,
                   "example": "simple_password"
                 },
                 "timezone": {
                   "type": "string",
+                  "maxLength": 40,
                   "example": "Europe/Moscow"
                 },
                 "username": {
                   "type": "string",
+                  "maxLength": 60,
                   "example": "simple_username"
                 }
               }
@@ -747,22 +752,27 @@ func init() {
               "properties": {
                 "email": {
                   "type": "string",
+                  "maxLength": 100,
                   "example": "simple@example.com"
                 },
                 "language": {
                   "type": "string",
+                  "maxLength": 5,
                   "example": "ru_RU"
                 },
                 "password": {
                   "type": "string",
+                  "maxLength": 60,
                   "example": "simple_password"
                 },
                 "timezone": {
                   "type": "string",
+                  "maxLength": 40,
                   "example": "Europe/Moscow"
                 },
                 "username": {
                   "type": "string",
+                  "maxLength": 60,
                   "example": "simple_username"
                 }
               }

@@ -42,18 +42,23 @@ paths:
               username:
                 type: string
                 example: simple_username
+                maxLength: 60
               password:
                 type: string
                 example: simple_password
+                maxLength: 60
               email:
                 type: string
                 example: simple@example.com
+                maxLength: 100
               timezone:
                 type: string
                 example: Europe/Moscow
+                maxLength: 40
               language:
                 type: string
                 example: ru_RU
+                maxLength: 5
             required:
               - username
               - password
