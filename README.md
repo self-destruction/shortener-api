@@ -266,6 +266,7 @@ ___
 
 **restapi/configure_shortener.go** - файл с конфигурациями  
 **api/handlers** - хэндлеры   
+**swagger/swagger.yml** - сваггер-файл  
 ___
 [My private SwaggerHub](https://app.swaggerhub.com/apis/Intercross/shortener/1.0.0)
 
