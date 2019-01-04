@@ -224,8 +224,6 @@ paths:
     get:
       tags:
         - Link
-      security:
-        - BasicAuth: []
       summary: Get link for redirect
       operationId: getLink
       parameters:
@@ -235,14 +233,10 @@ paths:
           required: true
           type: string
       responses:
-        200:
-          $ref: '#/responses/Link'
-        401:
-          $ref: '#/responses/Unauthorized'
+        301:
+          $ref: '#/responses/Redirect'
         404:
           $ref: '#/responses/NotFound'
-        default:
-          description: Operation error
 
 definitions:
   User:
@@ -440,6 +434,8 @@ responses:
               - count
       required:
         - top
+  Redirect:
+    description: Link redirect
 # Added by API Auto Mocking Plugin
 host: localhost:8080
 basePath: /api/v1

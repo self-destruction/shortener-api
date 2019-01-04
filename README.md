@@ -217,16 +217,8 @@ syrchikov_max@mail.ru
 
 | Code | Description |
 | ---- | ----------- |
-| 200 |  |
-| 401 |  |
+| 301 |  |
 | 404 |  |
-| default | Operation error |
-
-**Security**
-
-| Security Schema | Scopes |
-| --- | --- |
-| BasicAuth | |
 
 ### Models
 ---

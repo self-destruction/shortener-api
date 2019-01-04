@@ -50,7 +50,7 @@ func NewShortenerAPI(spec *loads.Document) *ShortenerAPI {
 		StatisticGetCurrentUserHandler: statistic.GetCurrentUserHandlerFunc(func(params statistic.GetCurrentUserParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation StatisticGetCurrentUser has not yet been implemented")
 		}),
-		LinkGetLinkHandler: link.GetLinkHandlerFunc(func(params link.GetLinkParams, principal interface{}) middleware.Responder {
+		LinkGetLinkHandler: link.GetLinkHandlerFunc(func(params link.GetLinkParams) middleware.Responder {
 			return middleware.NotImplemented("operation LinkGetLink has not yet been implemented")
 		}),
 		StatisticGetLinkInfoHandler: statistic.GetLinkInfoHandlerFunc(func(params statistic.GetLinkInfoParams, principal interface{}) middleware.Responder {

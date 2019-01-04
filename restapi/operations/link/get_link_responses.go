@@ -13,114 +13,28 @@ import (
 	models "shortener-api/models"
 )
 
-// GetLinkOKCode is the HTTP code returned for type GetLinkOK
-const GetLinkOKCode int = 200
+// GetLinkMovedPermanentlyCode is the HTTP code returned for type GetLinkMovedPermanently
+const GetLinkMovedPermanentlyCode int = 301
 
-/*GetLinkOK Get link
+/*GetLinkMovedPermanently Link redirect
 
-swagger:response getLinkOK
+swagger:response getLinkMovedPermanently
 */
-type GetLinkOK struct {
-
-	/*
-	  In: Body
-	*/
-	Payload *models.Link `json:"body,omitempty"`
+type GetLinkMovedPermanently struct {
 }
 
-// NewGetLinkOK creates GetLinkOK with default headers values
-func NewGetLinkOK() *GetLinkOK {
+// NewGetLinkMovedPermanently creates GetLinkMovedPermanently with default headers values
+func NewGetLinkMovedPermanently() *GetLinkMovedPermanently {
 
-	return &GetLinkOK{}
-}
-
-// WithPayload adds the payload to the get link o k response
-func (o *GetLinkOK) WithPayload(payload *models.Link) *GetLinkOK {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the get link o k response
-func (o *GetLinkOK) SetPayload(payload *models.Link) {
-	o.Payload = payload
+	return &GetLinkMovedPermanently{}
 }
 
 // WriteResponse to the client
-func (o *GetLinkOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *GetLinkMovedPermanently) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.WriteHeader(200)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
-	}
-}
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-// GetLinkUnauthorizedCode is the HTTP code returned for type GetLinkUnauthorized
-const GetLinkUnauthorizedCode int = 401
-
-/*GetLinkUnauthorized Authentication information is missing or invalid
-
-swagger:response getLinkUnauthorized
-*/
-type GetLinkUnauthorized struct {
-	/*
-
-	 */
-	WWWAuthenticate string `json:"WWW_Authenticate"`
-
-	/*
-	  In: Body
-	*/
-	Payload *models.Error `json:"body,omitempty"`
-}
-
-// NewGetLinkUnauthorized creates GetLinkUnauthorized with default headers values
-func NewGetLinkUnauthorized() *GetLinkUnauthorized {
-
-	return &GetLinkUnauthorized{}
-}
-
-// WithWWWAuthenticate adds the wWWAuthenticate to the get link unauthorized response
-func (o *GetLinkUnauthorized) WithWWWAuthenticate(wWWAuthenticate string) *GetLinkUnauthorized {
-	o.WWWAuthenticate = wWWAuthenticate
-	return o
-}
-
-// SetWWWAuthenticate sets the wWWAuthenticate to the get link unauthorized response
-func (o *GetLinkUnauthorized) SetWWWAuthenticate(wWWAuthenticate string) {
-	o.WWWAuthenticate = wWWAuthenticate
-}
-
-// WithPayload adds the payload to the get link unauthorized response
-func (o *GetLinkUnauthorized) WithPayload(payload *models.Error) *GetLinkUnauthorized {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the get link unauthorized response
-func (o *GetLinkUnauthorized) SetPayload(payload *models.Error) {
-	o.Payload = payload
-}
-
-// WriteResponse to the client
-func (o *GetLinkUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	// response header WWW_Authenticate
-
-	wWWAuthenticate := o.WWWAuthenticate
-	if wWWAuthenticate != "" {
-		rw.Header().Set("WWW_Authenticate", wWWAuthenticate)
-	}
-
-	rw.WriteHeader(401)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
-	}
+	rw.WriteHeader(301)
 }
 
 // GetLinkNotFoundCode is the HTTP code returned for type GetLinkNotFound
@@ -165,42 +79,4 @@ func (o *GetLinkNotFound) WriteResponse(rw http.ResponseWriter, producer runtime
 			panic(err) // let the recovery middleware deal with this
 		}
 	}
-}
-
-/*GetLinkDefault Operation error
-
-swagger:response getLinkDefault
-*/
-type GetLinkDefault struct {
-	_statusCode int
-}
-
-// NewGetLinkDefault creates GetLinkDefault with default headers values
-func NewGetLinkDefault(code int) *GetLinkDefault {
-	if code <= 0 {
-		code = 500
-	}
-
-	return &GetLinkDefault{
-		_statusCode: code,
-	}
-}
-
-// WithStatusCode adds the status to the get link default response
-func (o *GetLinkDefault) WithStatusCode(code int) *GetLinkDefault {
-	o._statusCode = code
-	return o
-}
-
-// SetStatusCode sets the status to the get link default response
-func (o *GetLinkDefault) SetStatusCode(code int) {
-	o._statusCode = code
-}
-
-// WriteResponse to the client
-func (o *GetLinkDefault) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
-	rw.WriteHeader(o._statusCode)
 }

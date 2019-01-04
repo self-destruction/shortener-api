@@ -45,11 +45,6 @@ func init() {
   "paths": {
     "/shorten_urls/{hash}": {
       "get": {
-        "security": [
-          {
-            "BasicAuth": []
-          }
-        ],
         "tags": [
           "Link"
         ],
@@ -65,17 +60,11 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
-            "$ref": "#/responses/Link"
-          },
-          "401": {
-            "$ref": "#/responses/Unauthorized"
+          "301": {
+            "$ref": "#/responses/Redirect"
           },
           "404": {
             "$ref": "#/responses/NotFound"
-          },
-          "default": {
-            "description": "Operation error"
           }
         }
       }
@@ -561,6 +550,9 @@ func init() {
         "$ref": "#/definitions/Error"
       }
     },
+    "Redirect": {
+      "description": "Link redirect"
+    },
     "TopReferers": {
       "description": "Successful operation",
       "schema": {
@@ -705,11 +697,6 @@ func init() {
   "paths": {
     "/shorten_urls/{hash}": {
       "get": {
-        "security": [
-          {
-            "BasicAuth": []
-          }
-        ],
         "tags": [
           "Link"
         ],
@@ -725,31 +712,14 @@ func init() {
           }
         ],
         "responses": {
-          "200": {
-            "description": "Get link",
-            "schema": {
-              "$ref": "#/definitions/Link"
-            }
-          },
-          "401": {
-            "description": "Authentication information is missing or invalid",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            },
-            "headers": {
-              "WWW_Authenticate": {
-                "type": "string"
-              }
-            }
+          "301": {
+            "description": "Link redirect"
           },
           "404": {
             "description": "The specified resource was not found",
             "schema": {
               "$ref": "#/definitions/Error"
             }
-          },
-          "default": {
-            "description": "Operation error"
           }
         }
       }
@@ -1404,6 +1374,9 @@ func init() {
       "schema": {
         "$ref": "#/definitions/Error"
       }
+    },
+    "Redirect": {
+      "description": "Link redirect"
     },
     "TopReferers": {
       "description": "Successful operation",
