@@ -18,12 +18,16 @@ import (
 type User struct {
 
 	// date created
-	// Format: date-time
-	DateCreated strfmt.DateTime `json:"dateCreated,omitempty"`
+	// Required: true
+	DateCreated *string `json:"dateCreated"`
 
 	// email
 	// Required: true
 	Email *string `json:"email"`
+
+	// hash
+	// Required: true
+	Hash *string `json:"hash"`
 
 	// id
 	// Required: true
@@ -32,14 +36,6 @@ type User struct {
 
 	// language
 	Language string `json:"language,omitempty"`
-
-	// last login date
-	// Format: date-time
-	LastLoginDate strfmt.DateTime `json:"lastLoginDate,omitempty"`
-
-	// password
-	// Required: true
-	Password *string `json:"password"`
 
 	// timezone
 	Timezone string `json:"timezone,omitempty"`
@@ -61,15 +57,11 @@ func (m *User) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateHash(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateLastLoginDate(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validatePassword(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -85,11 +77,7 @@ func (m *User) Validate(formats strfmt.Registry) error {
 
 func (m *User) validateDateCreated(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.DateCreated) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("dateCreated", "body", "date-time", m.DateCreated.String(), formats); err != nil {
+	if err := validate.Required("dateCreated", "body", m.DateCreated); err != nil {
 		return err
 	}
 
@@ -105,6 +93,15 @@ func (m *User) validateEmail(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *User) validateHash(formats strfmt.Registry) error {
+
+	if err := validate.Required("hash", "body", m.Hash); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *User) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
@@ -112,28 +109,6 @@ func (m *User) validateID(formats strfmt.Registry) error {
 	}
 
 	if err := validate.MinimumInt("id", "body", int64(*m.ID), 1, false); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *User) validateLastLoginDate(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.LastLoginDate) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("lastLoginDate", "body", "date-time", m.LastLoginDate.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *User) validatePassword(formats strfmt.Registry) error {
-
-	if err := validate.Required("password", "body", m.Password); err != nil {
 		return err
 	}
 

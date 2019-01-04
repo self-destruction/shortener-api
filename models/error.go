@@ -19,7 +19,7 @@ type Error struct {
 
 	// code
 	// Required: true
-	Code *string `json:"code"`
+	Code *int64 `json:"code"`
 
 	// message
 	Message string `json:"message,omitempty"`

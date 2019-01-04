@@ -72,11 +72,13 @@ type CreateUserBody struct {
 
 	// language
 	// Max Length: 5
+	// Min Length: 2
 	Language string `json:"language,omitempty"`
 
 	// password
 	// Required: true
 	// Max Length: 60
+	// Min Length: 5
 	Password *string `json:"password"`
 
 	// timezone
@@ -86,6 +88,7 @@ type CreateUserBody struct {
 	// username
 	// Required: true
 	// Max Length: 60
+	// Min Length: 5
 	Username *string `json:"username"`
 }
 
@@ -138,6 +141,10 @@ func (o *CreateUserBody) validateLanguage(formats strfmt.Registry) error {
 		return nil
 	}
 
+	if err := validate.MinLength("body"+"."+"language", "body", string(o.Language), 2); err != nil {
+		return err
+	}
+
 	if err := validate.MaxLength("body"+"."+"language", "body", string(o.Language), 5); err != nil {
 		return err
 	}
@@ -148,6 +155,10 @@ func (o *CreateUserBody) validateLanguage(formats strfmt.Registry) error {
 func (o *CreateUserBody) validatePassword(formats strfmt.Registry) error {
 
 	if err := validate.Required("body"+"."+"password", "body", o.Password); err != nil {
+		return err
+	}
+
+	if err := validate.MinLength("body"+"."+"password", "body", string(*o.Password), 5); err != nil {
 		return err
 	}
 
@@ -174,6 +185,10 @@ func (o *CreateUserBody) validateTimezone(formats strfmt.Registry) error {
 func (o *CreateUserBody) validateUsername(formats strfmt.Registry) error {
 
 	if err := validate.Required("body"+"."+"username", "body", o.Username); err != nil {
+		return err
+	}
+
+	if err := validate.MinLength("body"+"."+"username", "body", string(*o.Username), 5); err != nil {
 		return err
 	}
 

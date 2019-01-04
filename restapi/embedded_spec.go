@@ -98,11 +98,13 @@ func init() {
                 "language": {
                   "type": "string",
                   "maxLength": 5,
+                  "minLength": 2,
                   "example": "ru_RU"
                 },
                 "password": {
                   "type": "string",
                   "maxLength": 60,
+                  "minLength": 5,
                   "example": "simple_password"
                 },
                 "timezone": {
@@ -113,6 +115,7 @@ func init() {
                 "username": {
                   "type": "string",
                   "maxLength": 60,
+                  "minLength": 5,
                   "example": "simple_username"
                 }
               }
@@ -390,7 +393,7 @@ func init() {
       ],
       "properties": {
         "code": {
-          "type": "string"
+          "type": "integer"
         },
         "message": {
           "type": "string"
@@ -472,18 +475,22 @@ func init() {
       "required": [
         "id",
         "username",
-        "password",
-        "email"
+        "hash",
+        "email",
+        "dateCreated"
       ],
       "properties": {
         "dateCreated": {
           "type": "string",
-          "format": "date-time",
-          "example": "2016-08-29T09:12:33"
+          "example": "2016-08-29 09:12:33"
         },
         "email": {
           "type": "string",
           "example": "simple@example.com"
+        },
+        "hash": {
+          "type": "string",
+          "example": "y9df4FG3FS4yu4f5hjd"
         },
         "id": {
           "type": "integer",
@@ -494,15 +501,6 @@ func init() {
         "language": {
           "type": "string",
           "example": "ru_RU"
-        },
-        "lastLoginDate": {
-          "type": "string",
-          "format": "date-time",
-          "example": "2016-08-29T09:12:33"
-        },
-        "password": {
-          "type": "string",
-          "example": "y9df4FG3FS4yu4f5hjd"
         },
         "timezone": {
           "type": "string",
@@ -758,11 +756,13 @@ func init() {
                 "language": {
                   "type": "string",
                   "maxLength": 5,
+                  "minLength": 2,
                   "example": "ru_RU"
                 },
                 "password": {
                   "type": "string",
                   "maxLength": 60,
+                  "minLength": 5,
                   "example": "simple_password"
                 },
                 "timezone": {
@@ -773,6 +773,7 @@ func init() {
                 "username": {
                   "type": "string",
                   "maxLength": 60,
+                  "minLength": 5,
                   "example": "simple_username"
                 }
               }
@@ -1219,7 +1220,7 @@ func init() {
       ],
       "properties": {
         "code": {
-          "type": "string"
+          "type": "integer"
         },
         "message": {
           "type": "string"
@@ -1302,18 +1303,22 @@ func init() {
       "required": [
         "id",
         "username",
-        "password",
-        "email"
+        "hash",
+        "email",
+        "dateCreated"
       ],
       "properties": {
         "dateCreated": {
           "type": "string",
-          "format": "date-time",
-          "example": "2016-08-29T09:12:33"
+          "example": "2016-08-29 09:12:33"
         },
         "email": {
           "type": "string",
           "example": "simple@example.com"
+        },
+        "hash": {
+          "type": "string",
+          "example": "y9df4FG3FS4yu4f5hjd"
         },
         "id": {
           "type": "integer",
@@ -1324,15 +1329,6 @@ func init() {
         "language": {
           "type": "string",
           "example": "ru_RU"
-        },
-        "lastLoginDate": {
-          "type": "string",
-          "format": "date-time",
-          "example": "2016-08-29T09:12:33"
-        },
-        "password": {
-          "type": "string",
-          "example": "y9df4FG3FS4yu4f5hjd"
         },
         "timezone": {
           "type": "string",

@@ -8,9 +8,12 @@ CREATE TABLE IF NOT EXISTS `user` (
   `username` VARCHAR(60) UNIQUE NOT NULL,
   `hash` CHAR(64) NOT NULL,
   `email` VARCHAR(100) UNIQUE NOT NULL,
-  `timezone` VARCHAR(40) DEFAULT 'Europe/Moscow',
-  `language` VARCHAR(5) DEFAULT 'ru_RU',
+  `timezone` VARCHAR(40) NOT NULL DEFAULT 'Europe/Moscow',
+  `language` VARCHAR(5) NOT NULL DEFAULT 'ru_RU',
   `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SELECT STR_TO_DATE(createdAt, '%Y-%m-%d %H:%i:%s') AS dateCreated FROM `shortener`.`user` WHERE id=1 LIMIT 1;
+SELECT '2019-01-04T14:42:37.000Z' AS dateCreated;

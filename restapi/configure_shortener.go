@@ -4,24 +4,40 @@ package restapi
 
 import (
 	"crypto/tls"
-	"github.com/go-openapi/swag"
-	"net/http"
-	"shortener-api/models"
-
+	"github.com/dre1080/recover"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-
+	"github.com/go-openapi/swag"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/ivahaev/go-logger"
+	"github.com/jmoiron/sqlx"
+	"github.com/jmoiron/sqlx/reflectx"
+	"log"
+	"net/http"
+	"shortener-api/models"
 	"shortener-api/restapi/operations"
 	"shortener-api/restapi/operations/link"
 	"shortener-api/restapi/operations/statistic"
 	"shortener-api/restapi/operations/user"
+	"strings"
 )
 
 //go:generate swagger generate server --target ..\..\shortener-api --name Shortener --spec ..\swagger.yml
 
 func configureFlags(api *operations.ShortenerAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
+}
+
+var connect *sqlx.DB
+
+func hitError(err error, errorCode int) middleware.Responder {
+	return user.NewCreateUserBadRequest().WithPayload(
+		&models.Error{
+			Code:    swag.Int64(int64(errorCode)),
+			Message: err.Error(),
+		},
+	)
 }
 
 func configureAPI(api *operations.ShortenerAPI) http.Handler {
@@ -53,18 +69,42 @@ func configureAPI(api *operations.ShortenerAPI) http.Handler {
 	})
 	api.UserCreateUserHandler = user.CreateUserHandlerFunc(func(params user.CreateUserParams) middleware.Responder {
 		userRequest := params.Body
-		userModel := &models.User{
-			ID:       swag.Int64(1),
-			Username: userRequest.Username,
-			Password: userRequest.Password,
-			Email:    userRequest.Email,
+
+		stmt, err := connect.Prepare("INSERT `shortener`.`user` SET username=?, hash=?, email=?, timezone=?, language=?")
+		if err != nil {
+			logger.Debug(err)
+			return hitError(err, user.CreateUserBadRequestCode)
 		}
-		return user.NewCreateUserOK().WithPayload(userModel)
+
+		// insert user into db
+		res, err := stmt.Exec(userRequest.Username, userRequest.Password, userRequest.Email, userRequest.Timezone, userRequest.Language)
+		if err != nil {
+			logger.Debug(err)
+			return hitError(err, user.CreateUserBadRequestCode)
+		}
+
+		insertId, err := res.LastInsertId()
+		if err != nil {
+			logger.Debug(err)
+			return hitError(err, user.CreateUserBadRequestCode)
+		}
+
+		// select user by last insert id for response
+		userDB := &models.User{}
+		query := "SELECT id, username, hash, email, timezone, language, createdAt AS dateCreated FROM `shortener`.`user` WHERE id=? LIMIT 1"
+		err = connect.Get(userDB, query, insertId)
+		if err != nil {
+			logger.Debug(err)
+			return hitError(err, user.CreateUserBadRequestCode)
+		}
+
+		logger.JSON(userDB)
+		return user.NewCreateUserOK().WithPayload(userDB)
 	})
 	api.StatisticGetCurrentUserHandler = statistic.GetCurrentUserHandlerFunc(func(params statistic.GetCurrentUserParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation statistic.GetCurrentUser has not yet been implemented")
 	})
-	api.LinkGetLinkHandler = link.GetLinkHandlerFunc(func(params link.GetLinkParams, principal interface{}) middleware.Responder {
+	api.LinkGetLinkHandler = link.GetLinkHandlerFunc(func(params link.GetLinkParams) middleware.Responder {
 		return middleware.NotImplemented("operation link.GetLink has not yet been implemented")
 	})
 	api.StatisticGetLinkInfoHandler = statistic.GetLinkInfoHandlerFunc(func(params statistic.GetLinkInfoParams, principal interface{}) middleware.Responder {
@@ -112,5 +152,31 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return handler
+	db, err := sqlx.Open("mysql", "root:pwd@tcp(192.168.99.100:3307)/shortener?charset=utf8")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	//defer db.Close()
+
+	// Ping to connection
+	err = db.Ping()
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	// https://github.com/jmoiron/sqlx/issues/322
+	db.Mapper = reflectx.NewMapperFunc("json", strings.ToLower)
+
+	connect = db
+
+	err = logger.SetLevel("DEBUG")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	recovery := recover.New(&recover.Options{
+		Log: logger.Info,
+	})
+
+	return recovery(handler)
 }

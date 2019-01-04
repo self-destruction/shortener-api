@@ -42,10 +42,12 @@ paths:
               username:
                 type: string
                 example: simple_username
+                minLength: 5
                 maxLength: 60
               password:
                 type: string
                 example: simple_password
+                minLength: 5
                 maxLength: 60
               email:
                 type: string
@@ -58,6 +60,7 @@ paths:
               language:
                 type: string
                 example: ru_RU
+                minLength: 2
                 maxLength: 5
             required:
               - username
@@ -255,7 +258,7 @@ definitions:
       username:
         type: string
         example: simple_username
-      password:
+      hash:
         type: string
         example: y9df4FG3FS4yu4f5hjd
       email:
@@ -263,12 +266,7 @@ definitions:
         example: simple@example.com
       dateCreated:
         type: string
-        format: date-time
-        example: '2016-08-29T09:12:33'
-      lastLoginDate:
-        type: string
-        format: date-time
-        example: '2016-08-29T09:12:33'
+        example: '2016-08-29 09:12:33'
       timezone:
         type: string
         example: Europe/Moscow
@@ -278,8 +276,9 @@ definitions:
     required:
       - id
       - username
-      - password
+      - hash
       - email
+      - dateCreated
   Link:
     type: object
     properties:
@@ -339,7 +338,7 @@ definitions:
     type: object
     properties:
       code:
-        type: string
+        type: integer
       message:
         type: string
     required:
