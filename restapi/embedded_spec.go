@@ -375,6 +375,37 @@ func init() {
     }
   },
   "definitions": {
+    "Click": {
+      "type": "object",
+      "required": [
+        "id",
+        "linkId"
+      ],
+      "properties": {
+        "dateCreated": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2016-08-29T09:12:33"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1,
+          "example": 3
+        },
+        "linkId": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1,
+          "example": 1
+        },
+        "referer": {
+          "description": "Where the transition came from",
+          "type": "string",
+          "example": "https://vk.com"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "required": [
@@ -430,34 +461,6 @@ func init() {
           "format": "int64",
           "minimum": 1,
           "example": 1
-        }
-      }
-    },
-    "Transition": {
-      "type": "object",
-      "required": [
-        "id",
-        "link"
-      ],
-      "properties": {
-        "dateCreated": {
-          "type": "string",
-          "format": "date-time",
-          "example": "2016-08-29T09:12:33"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64",
-          "minimum": 1,
-          "example": 3
-        },
-        "link": {
-          "$ref": "#/definitions/Link"
-        },
-        "referer": {
-          "description": "Where the transition came from",
-          "type": "string",
-          "example": "https://vk.com"
         }
       }
     },
@@ -545,7 +548,12 @@ func init() {
       }
     },
     "Redirect": {
-      "description": "Link redirect"
+      "description": "Link redirect",
+      "headers": {
+        "Location": {
+          "type": "string"
+        }
+      }
     },
     "TopReferers": {
       "description": "Successful operation",
@@ -707,7 +715,12 @@ func init() {
         ],
         "responses": {
           "301": {
-            "description": "Link redirect"
+            "description": "Link redirect",
+            "headers": {
+              "Location": {
+                "type": "string"
+              }
+            }
           },
           "404": {
             "description": "The specified resource was not found",
@@ -1193,6 +1206,37 @@ func init() {
     }
   },
   "definitions": {
+    "Click": {
+      "type": "object",
+      "required": [
+        "id",
+        "linkId"
+      ],
+      "properties": {
+        "dateCreated": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2016-08-29T09:12:33"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1,
+          "example": 3
+        },
+        "linkId": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1,
+          "example": 1
+        },
+        "referer": {
+          "description": "Where the transition came from",
+          "type": "string",
+          "example": "https://vk.com"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "required": [
@@ -1249,34 +1293,6 @@ func init() {
           "format": "int64",
           "minimum": 1,
           "example": 1
-        }
-      }
-    },
-    "Transition": {
-      "type": "object",
-      "required": [
-        "id",
-        "link"
-      ],
-      "properties": {
-        "dateCreated": {
-          "type": "string",
-          "format": "date-time",
-          "example": "2016-08-29T09:12:33"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64",
-          "minimum": 1,
-          "example": 3
-        },
-        "link": {
-          "$ref": "#/definitions/Link"
-        },
-        "referer": {
-          "description": "Where the transition came from",
-          "type": "string",
-          "example": "https://vk.com"
         }
       }
     },
@@ -1364,7 +1380,12 @@ func init() {
       }
     },
     "Redirect": {
-      "description": "Link redirect"
+      "description": "Link redirect",
+      "headers": {
+        "Location": {
+          "type": "string"
+        }
+      }
     },
     "TopReferers": {
       "description": "Successful operation",

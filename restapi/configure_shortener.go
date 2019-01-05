@@ -57,12 +57,8 @@ func configureAPI(api *operations.ShortenerAPI) http.Handler {
 	api.LinkCreateShortLinkHandler = link.CreateShortLinkHandlerFunc(h.CreateShortLink)
 	api.UserCreateUserHandler = user.CreateUserHandlerFunc(h.CreateUser)
 	api.StatisticGetCurrentUserHandler = statistic.GetCurrentUserHandlerFunc(h.GetCurrentUser)
-	api.LinkGetLinkHandler = link.GetLinkHandlerFunc(func(params link.GetLinkParams) middleware.Responder {
-		return middleware.NotImplemented("operation link.GetLink has not yet been implemented")
-	})
-	api.StatisticGetLinkInfoHandler = statistic.GetLinkInfoHandlerFunc(func(params statistic.GetLinkInfoParams, principal interface{}) middleware.Responder {
-		return middleware.NotImplemented("operation statistic.GetLinkInfo has not yet been implemented")
-	})
+	api.LinkGetLinkHandler = link.GetLinkHandlerFunc(h.GetLink)
+	api.StatisticGetLinkInfoHandler = statistic.GetLinkInfoHandlerFunc(h.GetLinkInfo)
 	api.LinkGetLinksHandler = link.GetLinksHandlerFunc(h.GetLinks)
 	api.StatisticGetReferersHandler = statistic.GetReferersHandlerFunc(func(params statistic.GetReferersParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation statistic.GetReferers has not yet been implemented")

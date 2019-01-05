@@ -10,6 +10,25 @@ import (
 	"time"
 )
 
+func (h *Handler) GetLink(params link.GetLinkParams) middleware.Responder {
+	// select link by hash for response
+	linkDB := &models.Link{}
+	query := "SELECT id, userId, shortUrl, fullUrl, createdAt AS dateCreated FROM `shortener`.`link` WHERE shortUrl=? LIMIT 1"
+	err := h.Connect.Get(linkDB, query, params.Hash)
+	if err != nil {
+		logger.Debug(err)
+		return link.NewGetLinkNotFound().WithPayload(
+			&models.Error{
+				Code:    swag.Int64(int64(link.GetLinkNotFoundCode)),
+				Message: err.Error(),
+			},
+		)
+	}
+
+	logger.JSON(linkDB)
+	return link.NewGetLinkMovedPermanently().WithLocation(*linkDB.FullURL)
+}
+
 func (h *Handler) GetLinks(params link.GetLinksParams, principal interface{}) middleware.Responder {
 	user := principal.(*models.User)
 

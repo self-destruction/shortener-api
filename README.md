@@ -246,12 +246,12 @@ syrchikov_max@mail.ru
 | clicks | long | Clicks this link | No |
 | dateCreated | string (string) |  | No |
 
-### Transition  
+### Click  
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | id | long |  | Yes |
-| link | [Link](#link) |  | Yes |
+| linkId | long |  | Yes |
 | referer | string | Where the transition came from | No |
 | dateCreated | dateTime |  | No |
 

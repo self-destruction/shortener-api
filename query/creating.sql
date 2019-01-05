@@ -26,5 +26,16 @@ CREATE TABLE IF NOT EXISTS `link` (
   FOREIGN KEY (`userId`) REFERENCES `shortener`.`user`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `click`;
+CREATE TABLE IF NOT EXISTS `click` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `linkId` INT(11) UNSIGNED NOT NULL,
+  `referer` VARCHAR(1000),
+  `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`linkId`) REFERENCES `shortener`.`link`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT `shortener`.`user` SET username='123', hash='fdgff', email='1232';
 INSERT `shortener`.`link` SET shortUrl='jfrf67rf', fullUrl='http://vk.com', userId=1;

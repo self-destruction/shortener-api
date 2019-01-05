@@ -306,7 +306,7 @@ definitions:
       - id
       - shortUrl
       - fullUrl
-  Transition:
+  Click:
     type: object
     properties:
       id:
@@ -314,8 +314,11 @@ definitions:
         format: int64
         minimum: 1
         example: 3
-      link:
-        $ref: '#/definitions/Link'
+      linkId:
+        type: integer
+        format: int64
+        minimum: 1
+        example: 1
       referer:
         type: string
         description: Where the transition came from
@@ -326,7 +329,7 @@ definitions:
         example: '2016-08-29T09:12:33'
     required:
       - id
-      - link
+      - linkId
   Error:
     type: object
     properties:
@@ -433,6 +436,9 @@ responses:
         - top
   Redirect:
     description: Link redirect
+    headers:
+      Location:
+        type: "string"
 # Added by API Auto Mocking Plugin
 host: localhost:8080
 basePath: /api/v1

@@ -21,6 +21,10 @@ const GetLinkMovedPermanentlyCode int = 301
 swagger:response getLinkMovedPermanently
 */
 type GetLinkMovedPermanently struct {
+	/*
+
+	 */
+	Location string `json:"Location"`
 }
 
 // NewGetLinkMovedPermanently creates GetLinkMovedPermanently with default headers values
@@ -29,8 +33,26 @@ func NewGetLinkMovedPermanently() *GetLinkMovedPermanently {
 	return &GetLinkMovedPermanently{}
 }
 
+// WithLocation adds the location to the get link moved permanently response
+func (o *GetLinkMovedPermanently) WithLocation(location string) *GetLinkMovedPermanently {
+	o.Location = location
+	return o
+}
+
+// SetLocation sets the location to the get link moved permanently response
+func (o *GetLinkMovedPermanently) SetLocation(location string) {
+	o.Location = location
+}
+
 // WriteResponse to the client
 func (o *GetLinkMovedPermanently) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	// response header Location
+
+	location := o.Location
+	if location != "" {
+		rw.Header().Set("Location", location)
+	}
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
