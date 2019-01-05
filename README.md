@@ -240,11 +240,11 @@ syrchikov_max@mail.ru
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | id | long |  | Yes |
-| hash | string | Short url | Yes |
-| fullTitle | string | Full link | Yes |
-| user | [User](#user) |  | Yes |
-| views | long | Views this link | No |
-| dateCreated | dateTime |  | No |
+| shortUrl | string | Short url | Yes |
+| fullUrl | string | Full link | Yes |
+| userId | long |  | No |
+| clicks | long | Clicks this link | No |
+| dateCreated | string (string) |  | No |
 
 ### Transition  
 
