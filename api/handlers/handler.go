@@ -5,6 +5,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/ivahaev/go-logger"
 	"github.com/jmoiron/sqlx"
+	"golang.org/x/crypto/bcrypt"
 	"shortener-api/models"
 )
 
@@ -14,12 +15,21 @@ type Handler struct {
 
 func (h *Handler) Authorize(user string, pass string) (interface{}, error) {
 	userDB := &models.User{}
-	query := "SELECT id, username, hash, email, timezone, language, createdAt AS dateCreated FROM `shortener`.`user`WHERE username = ? AND hash = ? LIMIT 1"
+	query := "SELECT id, username, hash, email, createdAt AS dateCreated FROM `shortener`.`user`WHERE username = ? AND hash = ? LIMIT 1"
 	err := h.Connect.Get(userDB, query, user, pass)
 	if err != nil {
 		logger.Notice(err)
-		return nil, errors.Unauthenticated(fmt.Sprintf("username - %s", user))
+		return nil, errors.Unauthenticated(fmt.Sprintf("this username and password"))
 	}
 
 	return userDB, nil
+}
+
+func (h *Handler) getHash(password string) string {
+	// Hash & salt the user password
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	if err != nil {
+		logger.Debug(err)
+	}
+	return string(hash)
 }

@@ -53,15 +53,6 @@ paths:
                 type: string
                 example: simple@example.com
                 maxLength: 100
-              timezone:
-                type: string
-                example: Europe/Moscow
-                maxLength: 40
-              language:
-                type: string
-                example: ru_RU
-                minLength: 2
-                maxLength: 5
             required:
               - username
               - password
@@ -260,7 +251,7 @@ definitions:
         example: simple_username
       hash:
         type: string
-        example: y9df4FG3FS4yu4f5hjd
+        example: $2a$04$Nx.6xqukBA2T5oC3NeSxqOsvulltyjIyyLnd0TYGyvcNCFtxfsJl.
       email:
         type: string
         example: simple@example.com

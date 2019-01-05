@@ -12,39 +12,42 @@ import (
 func (h *Handler) CreateUser(params user.CreateUserParams) middleware.Responder {
 	userRequest := params.Body
 
-	stmt, err := h.Connect.Prepare("INSERT `shortener`.`user` SET username=?, hash=?, email=?, timezone=?, language=?")
+	hash := h.getHash(*userRequest.Password)
+
+	queryString := "INSERT `shortener`.`user` SET username=?, hash=?, email=?"
+	stmt, err := h.Connect.Prepare(queryString)
 	if err != nil {
 		logger.Debug(err)
-		return h.hitCreateUserError(err, user.CreateUserBadRequestCode)
+		return hitCreateUserError(err, user.CreateUserBadRequestCode)
 	}
 
 	// insert user into db
-	res, err := stmt.Exec(userRequest.Username, userRequest.Password, userRequest.Email, userRequest.Timezone, userRequest.Language)
+	res, err := stmt.Exec(userRequest.Username, hash, userRequest.Email)
 	if err != nil {
 		logger.Debug(err)
-		return h.hitCreateUserError(err, user.CreateUserBadRequestCode)
+		return hitCreateUserError(err, user.CreateUserBadRequestCode)
 	}
 
 	insertId, err := res.LastInsertId()
 	if err != nil {
 		logger.Debug(err)
-		return h.hitCreateUserError(err, user.CreateUserBadRequestCode)
+		return hitCreateUserError(err, user.CreateUserBadRequestCode)
 	}
 
 	// select user by last insert id for response
 	userDB := &models.User{}
-	query := "SELECT id, username, hash, email, timezone, language, createdAt AS dateCreated FROM `shortener`.`user` WHERE id=? LIMIT 1"
+	query := "SELECT id, username, hash, email, createdAt AS dateCreated FROM `shortener`.`user` WHERE id=? LIMIT 1"
 	err = h.Connect.Get(userDB, query, insertId)
 	if err != nil {
 		logger.Debug(err)
-		return h.hitCreateUserError(err, user.CreateUserBadRequestCode)
+		return hitCreateUserError(err, user.CreateUserBadRequestCode)
 	}
 
 	logger.JSON(userDB)
 	return user.NewCreateUserOK().WithPayload(userDB)
 }
 
-func (h *Handler) hitCreateUserError(err error, errorCode int) middleware.Responder {
+func hitCreateUserError(err error, errorCode int) middleware.Responder {
 	return user.NewCreateUserBadRequest().WithPayload(
 		&models.Error{
 			Code:    swag.Int64(int64(errorCode)),

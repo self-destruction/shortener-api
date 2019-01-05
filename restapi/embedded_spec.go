@@ -95,22 +95,11 @@ func init() {
                   "maxLength": 100,
                   "example": "simple@example.com"
                 },
-                "language": {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 2,
-                  "example": "ru_RU"
-                },
                 "password": {
                   "type": "string",
                   "maxLength": 60,
                   "minLength": 5,
                   "example": "simple_password"
-                },
-                "timezone": {
-                  "type": "string",
-                  "maxLength": 40,
-                  "example": "Europe/Moscow"
                 },
                 "username": {
                   "type": "string",
@@ -753,22 +742,11 @@ func init() {
                   "maxLength": 100,
                   "example": "simple@example.com"
                 },
-                "language": {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 2,
-                  "example": "ru_RU"
-                },
                 "password": {
                   "type": "string",
                   "maxLength": 60,
                   "minLength": 5,
                   "example": "simple_password"
-                },
-                "timezone": {
-                  "type": "string",
-                  "maxLength": 40,
-                  "example": "Europe/Moscow"
                 },
                 "username": {
                   "type": "string",
