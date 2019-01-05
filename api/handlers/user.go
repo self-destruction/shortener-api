@@ -5,9 +5,32 @@ import (
 	"github.com/go-openapi/swag"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ivahaev/go-logger"
+	"golang.org/x/crypto/bcrypt"
 	"shortener-api/models"
 	"shortener-api/restapi/operations/user"
 )
+
+func (h *Handler) LoginUser(params user.LoginUserParams) middleware.Responder {
+	userRequest := params.Body
+
+	userDB := &models.User{}
+	query := "SELECT id, username, hash, email, createdAt AS dateCreated FROM `shortener`.`user`WHERE username = ? LIMIT 1"
+	err := h.Connect.Get(userDB, query, userRequest.Username)
+	if err != nil {
+		logger.Debug(err)
+		return hitCreateUserError(err, user.LoginUserBadRequestCode)
+	}
+
+	// compare password and hash
+	err = bcrypt.CompareHashAndPassword([]byte(*userDB.Hash), []byte(*userRequest.Password))
+	if err != nil {
+		logger.Debug(err)
+		return hitCreateUserError(err, user.LoginUserBadRequestCode)
+	}
+
+	logger.JSON(userDB)
+	return user.NewLoginUserOK().WithPayload(userDB)
+}
 
 func (h *Handler) CreateUser(params user.CreateUserParams) middleware.Responder {
 	userRequest := params.Body

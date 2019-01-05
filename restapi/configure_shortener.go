@@ -71,9 +71,7 @@ func configureAPI(api *operations.ShortenerAPI) http.Handler {
 	api.StatisticGetReferersHandler = statistic.GetReferersHandlerFunc(func(params statistic.GetReferersParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation statistic.GetReferers has not yet been implemented")
 	})
-	api.UserLoginUserHandler = user.LoginUserHandlerFunc(func(params user.LoginUserParams) middleware.Responder {
-		return middleware.NotImplemented("operation user.LoginUser has not yet been implemented")
-	})
+	api.UserLoginUserHandler = user.LoginUserHandlerFunc(h.LoginUser)
 	api.UserLogoutUserHandler = user.LogoutUserHandlerFunc(func(params user.LogoutUserParams, principal interface{}) middleware.Responder {
 		return middleware.NotImplemented("operation user.LogoutUser has not yet been implemented")
 	})
