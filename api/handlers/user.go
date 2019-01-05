@@ -18,14 +18,14 @@ func (h *Handler) LoginUser(params user.LoginUserParams) middleware.Responder {
 	err := h.Connect.Get(userDB, query, userRequest.Username)
 	if err != nil {
 		logger.Debug(err)
-		return hitCreateUserError(err, user.LoginUserBadRequestCode)
+		return hitLoginUserError(err, user.LoginUserBadRequestCode)
 	}
 
 	// compare password and hash
 	err = bcrypt.CompareHashAndPassword([]byte(*userDB.Hash), []byte(*userRequest.Password))
 	if err != nil {
 		logger.Debug(err)
-		return hitCreateUserError(err, user.LoginUserBadRequestCode)
+		return hitLoginUserError(err, user.LoginUserBadRequestCode)
 	}
 
 	logger.JSON(userDB)
@@ -71,6 +71,15 @@ func (h *Handler) CreateUser(params user.CreateUserParams) middleware.Responder 
 }
 
 func hitCreateUserError(err error, errorCode int) middleware.Responder {
+	return user.NewCreateUserBadRequest().WithPayload(
+		&models.Error{
+			Code:    swag.Int64(int64(errorCode)),
+			Message: err.Error(),
+		},
+	)
+}
+
+func hitLoginUserError(err error, errorCode int) middleware.Responder {
 	return user.NewCreateUserBadRequest().WithPayload(
 		&models.Error{
 			Code:    swag.Int64(int64(errorCode)),

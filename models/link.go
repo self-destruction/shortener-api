@@ -17,45 +17,40 @@ import (
 // swagger:model Link
 type Link struct {
 
+	// Clicks this link
+	// Minimum: 0
+	Clicks *int64 `json:"clicks,omitempty"`
+
 	// date created
-	// Format: date-time
-	DateCreated strfmt.DateTime `json:"dateCreated,omitempty"`
+	DateCreated string `json:"dateCreated,omitempty"`
 
 	// Full link
 	// Required: true
-	FullTitle *string `json:"fullTitle"`
-
-	// Short url
-	// Required: true
-	Hash *string `json:"hash"`
+	FullURL *string `json:"fullUrl"`
 
 	// id
 	// Required: true
 	// Minimum: 1
 	ID *int64 `json:"id"`
 
-	// user
+	// Short url
 	// Required: true
-	User *User `json:"user"`
+	ShortURL *string `json:"shortUrl"`
 
-	// Views this link
-	// Minimum: 0
-	Views *int64 `json:"views,omitempty"`
+	// user Id
+	// Minimum: 1
+	UserID int64 `json:"userId,omitempty"`
 }
 
 // Validate validates this link
 func (m *Link) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateDateCreated(formats); err != nil {
+	if err := m.validateClicks(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateFullTitle(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateHash(formats); err != nil {
+	if err := m.validateFullURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -63,11 +58,11 @@ func (m *Link) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateUser(formats); err != nil {
+	if err := m.validateShortURL(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateViews(formats); err != nil {
+	if err := m.validateUserID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -77,31 +72,22 @@ func (m *Link) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Link) validateDateCreated(formats strfmt.Registry) error {
+func (m *Link) validateClicks(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.DateCreated) { // not required
+	if swag.IsZero(m.Clicks) { // not required
 		return nil
 	}
 
-	if err := validate.FormatOf("dateCreated", "body", "date-time", m.DateCreated.String(), formats); err != nil {
+	if err := validate.MinimumInt("clicks", "body", int64(*m.Clicks), 0, false); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (m *Link) validateFullTitle(formats strfmt.Registry) error {
+func (m *Link) validateFullURL(formats strfmt.Registry) error {
 
-	if err := validate.Required("fullTitle", "body", m.FullTitle); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Link) validateHash(formats strfmt.Registry) error {
-
-	if err := validate.Required("hash", "body", m.Hash); err != nil {
+	if err := validate.Required("fullUrl", "body", m.FullURL); err != nil {
 		return err
 	}
 
@@ -121,31 +107,22 @@ func (m *Link) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Link) validateUser(formats strfmt.Registry) error {
+func (m *Link) validateShortURL(formats strfmt.Registry) error {
 
-	if err := validate.Required("user", "body", m.User); err != nil {
+	if err := validate.Required("shortUrl", "body", m.ShortURL); err != nil {
 		return err
-	}
-
-	if m.User != nil {
-		if err := m.User.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("user")
-			}
-			return err
-		}
 	}
 
 	return nil
 }
 
-func (m *Link) validateViews(formats strfmt.Registry) error {
+func (m *Link) validateUserID(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Views) { // not required
+	if swag.IsZero(m.UserID) { // not required
 		return nil
 	}
 
-	if err := validate.MinimumInt("views", "body", int64(*m.Views), 0, false); err != nil {
+	if err := validate.MinimumInt("userId", "body", int64(m.UserID), 1, false); err != nil {
 		return err
 	}
 

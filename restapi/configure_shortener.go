@@ -54,9 +54,7 @@ func configureAPI(api *operations.ShortenerAPI) http.Handler {
 	//
 	// Example:
 	// api.APIAuthorizer = security.Authorized()
-	api.LinkCreateShortLinkHandler = link.CreateShortLinkHandlerFunc(func(params link.CreateShortLinkParams, principal interface{}) middleware.Responder {
-		return middleware.NotImplemented("operation link.CreateShortLink has not yet been implemented")
-	})
+	api.LinkCreateShortLinkHandler = link.CreateShortLinkHandlerFunc(h.CreateShortLink)
 	api.UserCreateUserHandler = user.CreateUserHandlerFunc(h.CreateUser)
 	api.StatisticGetCurrentUserHandler = statistic.GetCurrentUserHandlerFunc(h.GetCurrentUser)
 	api.LinkGetLinkHandler = link.GetLinkHandlerFunc(func(params link.GetLinkParams) middleware.Responder {

@@ -278,32 +278,34 @@ definitions:
         format: int64
         minimum: 1
         example: 2
-      hash:
+      shortUrl:
         type: string
         description: Short url
         example: gD4AyQ
-      fullTitle:
+      fullUrl:
         type: string
         description: Full link
         example: 'https://ya.ru'
-      user:
-        $ref: '#/definitions/User'
-      views:
+      userId:
+        type: integer
+        format: int64
+        minimum: 1
+        example: 1
+      clicks:
         type: integer
         format: int64
         minimum: 0
         default: 0
-        description: Views this link
+        description: Clicks this link
         example: 532
       dateCreated:
         type: string
-        format: date-time
-        example: '2016-08-29T09:12:33'
+        format: string
+        example: '2016-08-29 09:12:33'
     required:
       - id
-      - hash
-      - fullTitle
-      - user
+      - shortUrl
+      - fullUrl
   Transition:
     type: object
     properties:

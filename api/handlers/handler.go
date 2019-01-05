@@ -33,15 +33,3 @@ func (h *Handler) getHash(password string) string {
 	}
 	return string(hash)
 }
-
-func comparePasswords(hashedPwd string, plainPwd []byte) bool {
-	// Since we'll be getting the hashed password from the DB it
-	// will be a string so we'll need to convert it to a byte slice
-	byteHash := []byte(hashedPwd)
-	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
-	if err != nil {
-		return false
-	}
-
-	return true
-}

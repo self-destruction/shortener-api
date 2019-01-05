@@ -393,25 +393,26 @@ func init() {
       "type": "object",
       "required": [
         "id",
-        "hash",
-        "fullTitle",
-        "user"
+        "shortUrl",
+        "fullUrl"
       ],
       "properties": {
+        "clicks": {
+          "description": "Clicks this link",
+          "type": "integer",
+          "format": "int64",
+          "default": 0,
+          "example": 532
+        },
         "dateCreated": {
           "type": "string",
-          "format": "date-time",
-          "example": "2016-08-29T09:12:33"
+          "format": "string",
+          "example": "2016-08-29 09:12:33"
         },
-        "fullTitle": {
+        "fullUrl": {
           "description": "Full link",
           "type": "string",
           "example": "https://ya.ru"
-        },
-        "hash": {
-          "description": "Short url",
-          "type": "string",
-          "example": "gD4AyQ"
         },
         "id": {
           "type": "integer",
@@ -419,15 +420,16 @@ func init() {
           "minimum": 1,
           "example": 2
         },
-        "user": {
-          "$ref": "#/definitions/User"
+        "shortUrl": {
+          "description": "Short url",
+          "type": "string",
+          "example": "gD4AyQ"
         },
-        "views": {
-          "description": "Views this link",
+        "userId": {
           "type": "integer",
           "format": "int64",
-          "default": 0,
-          "example": 532
+          "minimum": 1,
+          "example": 1
         }
       }
     },
@@ -479,7 +481,7 @@ func init() {
         },
         "hash": {
           "type": "string",
-          "example": "y9df4FG3FS4yu4f5hjd"
+          "example": "$2a$04$Nx.6xqukBA2T5oC3NeSxqOsvulltyjIyyLnd0TYGyvcNCFtxfsJl."
         },
         "id": {
           "type": "integer",
@@ -1209,25 +1211,27 @@ func init() {
       "type": "object",
       "required": [
         "id",
-        "hash",
-        "fullTitle",
-        "user"
+        "shortUrl",
+        "fullUrl"
       ],
       "properties": {
+        "clicks": {
+          "description": "Clicks this link",
+          "type": "integer",
+          "format": "int64",
+          "default": 0,
+          "minimum": 0,
+          "example": 532
+        },
         "dateCreated": {
           "type": "string",
-          "format": "date-time",
-          "example": "2016-08-29T09:12:33"
+          "format": "string",
+          "example": "2016-08-29 09:12:33"
         },
-        "fullTitle": {
+        "fullUrl": {
           "description": "Full link",
           "type": "string",
           "example": "https://ya.ru"
-        },
-        "hash": {
-          "description": "Short url",
-          "type": "string",
-          "example": "gD4AyQ"
         },
         "id": {
           "type": "integer",
@@ -1235,16 +1239,16 @@ func init() {
           "minimum": 1,
           "example": 2
         },
-        "user": {
-          "$ref": "#/definitions/User"
+        "shortUrl": {
+          "description": "Short url",
+          "type": "string",
+          "example": "gD4AyQ"
         },
-        "views": {
-          "description": "Views this link",
+        "userId": {
           "type": "integer",
           "format": "int64",
-          "default": 0,
-          "minimum": 0,
-          "example": 532
+          "minimum": 1,
+          "example": 1
         }
       }
     },
@@ -1296,7 +1300,7 @@ func init() {
         },
         "hash": {
           "type": "string",
-          "example": "y9df4FG3FS4yu4f5hjd"
+          "example": "$2a$04$Nx.6xqukBA2T5oC3NeSxqOsvulltyjIyyLnd0TYGyvcNCFtxfsJl."
         },
         "id": {
           "type": "integer",
