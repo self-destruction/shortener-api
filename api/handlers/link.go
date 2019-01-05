@@ -10,9 +10,45 @@ import (
 	"time"
 )
 
+func (h *Handler) GetLinks(params link.GetLinksParams, principal interface{}) middleware.Responder {
+	user := principal.(*models.User)
+
+	// select array links by user id for response
+	query := "SELECT id, userId, shortUrl, fullUrl, createdAt AS dateCreated FROM `shortener`.`link` WHERE userId=?"
+	rows, err := h.Connect.Queryx(query, user.ID)
+	if err != nil {
+		logger.Debug(err)
+		return link.NewCreateShortLinkBadRequest().WithPayload(
+			&models.Error{
+				Code:    swag.Int64(int64(link.GetLinkNotFoundCode)),
+				Message: err.Error(),
+			},
+		)
+	}
+
+	linkBody := link.GetLinksOKBody{}
+
+	for rows.Next() {
+		linkDB := &models.Link{}
+		err = rows.StructScan(linkDB)
+		if err != nil {
+			logger.Debug(err)
+			return link.NewCreateShortLinkBadRequest().WithPayload(
+				&models.Error{
+					Code:    swag.Int64(int64(link.GetLinkNotFoundCode)),
+					Message: err.Error(),
+				},
+			)
+		}
+		linkBody.Links = append(linkBody.Links, linkDB)
+	}
+
+	logger.Debug(linkBody.Links)
+	return link.NewGetLinksOK().WithPayload(&linkBody)
+}
+
 func (h *Handler) CreateShortLink(params link.CreateShortLinkParams, principal interface{}) middleware.Responder {
 	userRequest := params.Body
-
 	user := principal.(*models.User)
 
 	queryString := "INSERT `shortener`.`link` SET shortUrl=?, fullUrl=?, userId=?"
@@ -37,7 +73,7 @@ func (h *Handler) CreateShortLink(params link.CreateShortLinkParams, principal i
 		return hitCreateShortUrlError(err, link.CreateShortLinkBadRequestCode)
 	}
 
-	// select user by last insert id for response
+	// select link by last insert id for response
 	linkDB := &models.Link{}
 	query := "SELECT id, userId, shortUrl, fullUrl, createdAt AS dateCreated FROM `shortener`.`link` WHERE id=? LIMIT 1"
 	err = h.Connect.Get(linkDB, query, insertId)
