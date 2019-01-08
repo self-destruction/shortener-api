@@ -48,6 +48,7 @@ func (h *Handler) GetLinks(params link.GetLinksParams, principal interface{}) mi
 	linkBody := link.GetLinksOKBody{}
 
 	for rows.Next() {
+		//TODO maybe may reuse this structure?
 		linkDB := &models.Link{}
 		err = rows.StructScan(linkDB)
 		if err != nil {

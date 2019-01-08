@@ -65,24 +65,25 @@ func (o *LoginUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model LoginUserBody
 type LoginUserBody struct {
 
+	// email
+	// Required: true
+	// Max Length: 100
+	Email *string `json:"email"`
+
 	// password
 	// Required: true
 	Password *string `json:"password"`
-
-	// username
-	// Required: true
-	Username *string `json:"username"`
 }
 
 // Validate validates this login user body
 func (o *LoginUserBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validatePassword(formats); err != nil {
+	if err := o.validateEmail(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := o.validateUsername(formats); err != nil {
+	if err := o.validatePassword(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -92,18 +93,22 @@ func (o *LoginUserBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (o *LoginUserBody) validatePassword(formats strfmt.Registry) error {
+func (o *LoginUserBody) validateEmail(formats strfmt.Registry) error {
 
-	if err := validate.Required("body"+"."+"password", "body", o.Password); err != nil {
+	if err := validate.Required("body"+"."+"email", "body", o.Email); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("body"+"."+"email", "body", string(*o.Email), 100); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (o *LoginUserBody) validateUsername(formats strfmt.Registry) error {
+func (o *LoginUserBody) validatePassword(formats strfmt.Registry) error {
 
-	if err := validate.Required("body"+"."+"username", "body", o.Username); err != nil {
+	if err := validate.Required("body"+"."+"password", "body", o.Password); err != nil {
 		return err
 	}
 

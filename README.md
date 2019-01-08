@@ -43,7 +43,7 @@ syrchikov_max@mail.ru
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| body | body | User login | Yes | object |
+| body | body | User email, user password | Yes | object |
 
 **Responses**
 

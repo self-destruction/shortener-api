@@ -14,8 +14,8 @@ func (h *Handler) LoginUser(params user.LoginUserParams) middleware.Responder {
 	userRequest := params.Body
 
 	userDB := &models.User{}
-	query := "SELECT id, username, hash, email, createdAt AS dateCreated FROM `shortener`.`user`WHERE username = ? LIMIT 1"
-	err := h.Connect.Get(userDB, query, userRequest.Username)
+	query := "SELECT id, username, hash, email, createdAt AS dateCreated FROM `shortener`.`user`WHERE email = ? LIMIT 1"
+	err := h.Connect.Get(userDB, query, userRequest.Email)
 	if err != nil {
 		logger.Debug(err)
 		return hitLoginUserError(err, user.LoginUserBadRequestCode)

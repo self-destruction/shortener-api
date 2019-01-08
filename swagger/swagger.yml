@@ -71,19 +71,22 @@ paths:
       parameters:
         - in: body
           name: body
-          description: User login
+          description: User email, user password
           required: true
           schema:
             type: object
             properties:
-              username:
+              email:
                 type: string
-                example: simple_username
+                example: simple@example.com
+                maxLength: 100
               password:
                 type: string
                 example: simple_password
+                minLength: 5
+                maxLength: 60
             required:
-              - username
+              - email
               - password
       responses:
         200:

@@ -47,7 +47,6 @@ func (o *LoginUserOK) SetPayload(payload *models.User) {
 
 // WriteResponse to the client
 func (o *LoginUserOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
 	rw.WriteHeader(200)
 	if o.Payload != nil {
 		payload := o.Payload

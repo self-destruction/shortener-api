@@ -137,17 +137,18 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "username",
+                "email",
                 "password"
               ],
               "properties": {
+                "email": {
+                  "type": "string",
+                  "maxLength": 100,
+                  "example": "simple@example.com"
+                },
                 "password": {
                   "type": "string",
                   "example": "simple_password"
-                },
-                "username": {
-                  "type": "string",
-                  "example": "simple_username"
                 }
               }
             }
@@ -805,17 +806,18 @@ func init() {
             "schema": {
               "type": "object",
               "required": [
-                "username",
+                "email",
                 "password"
               ],
               "properties": {
+                "email": {
+                  "type": "string",
+                  "maxLength": 100,
+                  "example": "simple@example.com"
+                },
                 "password": {
                   "type": "string",
                   "example": "simple_password"
-                },
-                "username": {
-                  "type": "string",
-                  "example": "simple_username"
                 }
               }
             }
