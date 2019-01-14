@@ -13,6 +13,7 @@ import (
 	"github.com/ivahaev/go-logger"
 	"github.com/jmoiron/sqlx"
 	"github.com/jmoiron/sqlx/reflectx"
+	"github.com/rs/cors"
 	"github.com/spf13/viper"
 	"log"
 	"net/http"
@@ -131,5 +132,6 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	recovery := recover.New(&recover.Options{
 		Log: logger.Crit,
 	})
-	return recovery(handler)
+	handleCORS := cors.Default().Handler
+	return recovery(handleCORS(handler))
 }
